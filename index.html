@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторная работа №1 - Исследование доменов</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(236, 72, 153, 0.2),
+                        0 0 0 2px rgba(244, 114, 182, 0.1) inset;
+        }
+        
+        h1 {
+            color: #9d174d;
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 0 #fbcfe8;
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #be185d;
+            font-size: 1.2em;
+            margin-bottom: 50px;
+            padding-bottom: 20px;
+            border-bottom: 3px dashed #f9a8d4;
+        }
+        
+        .student-info {
+            background: #fbcfe8;
+            border-radius: 20px;
+            padding: 15px 25px;
+            margin-bottom: 40px;
+            display: inline-block;
+            box-shadow: 0 5px 15px rgba(219, 39, 119, 0.2);
+            color: #831843;
+            font-weight: 500;
+        }
+        
+        .section {
+            margin-bottom: 50px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(244, 114, 182, 0.15);
+            transition: transform 0.3s ease;
+        }
+        
+        .section:hover {
+            transform: translateY(-5px);
+        }
+        
+        .section-title {
+            color: #be185d;
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            padding-left: 15px;
+            border-left: 8px solid #f472b6;
+            background: linear-gradient(to right, #fce7f3, transparent);
+        }
+        
+        .screenshot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            justify-items: center;
+        }
+        
+        .screenshot-card {
+            background: white;
+            border-radius: 25px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(236, 72, 153, 0.15),
+                        0 0 0 1px #f9a8d4 inset;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .screenshot-card:hover {
+            box-shadow: 0 20px 40px rgba(236, 72, 153, 0.25),
+                        0 0 0 2px #f472b6 inset;
+        }
+        
+        .screenshot-card h3 {
+            color: #9d174d;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .screenshot-card h3::before {
+            content: "🌸";
+            font-size: 1.2em;
+        }
+        
+        .screenshot-img {
+            width: 100%;
+            border-radius: 15px;
+            border: 3px solid #f9a8d4;
+            margin-bottom: 15px;
+            background: #fdf2f8;
+            padding: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .screenshot-img img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            display: block;
+        }
+        
+        .description {
+            background: #fdf2f8;
+            padding: 20px;
+            border-radius: 18px;
+            margin-top: 20px;
+        }
+        
+        .description p {
+            color: #831843;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            font-size: 1.05em;
+        }
+        
+        .description code {
+            background: #fbcfe8;
+            padding: 3px 8px;
+            border-radius: 12px;
+            color: #9d174d;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            border: 1px solid #f9a8d4;
+        }
+        
+        .command-block {
+            background: #831843;
+            color: #fbcfe8;
+            padding: 15px 20px;
+            border-radius: 15px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            border-left: 5px solid #f472b6;
+        }
+        
+        .results {
+            background: #fbcfe8;
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 15px;
+            border: 2px dashed #f472b6;
+        }
+        
+        .results p {
+            margin: 8px 0;
+            color: #831843;
+        }
+        
+        .highlight {
+            background: #ffffff;
+            color: #be185d;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin: 5px 0;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 3px dotted #f9a8d4;
+            color: #be185d;
+            font-size: 1.1em;
+        }
+        
+        .footer heart {
+            color: #f43f5e;
+            font-size: 1.3em;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .screenshot-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-title {
+                font-size: 1.5em;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+        }
+        
+        /* Розовые акценты */
+        .pink-tag {
+            background: #f472b6;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-size: 0.9em;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        
+        .date-badge {
+            background: #fbcfe8;
+            border: 2px solid #f472b6;
+            color: #9d174d;
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌸 Домашняя работа №1 🌸</h1>
+        
+        <div class="student-info">
+            👩‍🎓 Студент: Маймулина Полина | Группа: 22/1 
+        </div>
+
+        <!-- Раздел 1: Ping -->
+        <section class="section">
+            <h2 class="section-title">📌 1. Определение IP-адреса с помощью ping</h2>
+            <div class="screenshot-grid">
+                <div class="screenshot-card">
+                    <h3>Ping kubsu.ru</h3>
+                    <div class="screenshot-img">
+                        <!-- Здесь вставьте ваш скриншот -->
+                        <img src="./image3.png" alt="Ping kubsu.ru">
+                        <rect width=%22400%22 height=%22200%22 fill=%22%23fbcfe8%22/>
+                    </div>
+                    <div class="description">
+                        <p><span class="pink-tag">Команда</span> <code>ping kubsu.ru</code></p>
+                        <div class="command-block">
+                            $ ping kubsu.ru<br>
+                            64 bytes from 185.13.84.92: icmp_seq=1 ttl=62 time=1.18 ms<br>
+                            64 bytes from 185.13.84.92: icmp_seq=2 ttl=62 time=0.905 ms<br>
+                            ...<br>
+                            --- kubsu.ru ping statistics ---<br>
+                            20 packets transmitted, 20 received, 0% packet loss
+                        </div>
+                        <div class="results">
+                            <p><strong>📊 Результат:</strong></p>
+                            <p>🔹 IP-адрес kubsu.ru: <span class="highlight">185.13.84.92</span></p>
+                            <p>🔹 Среднее время ответа: 1.114 мс</p>
+                            <p>🔹 Потерь пакетов: 0%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Раздел 2: nslookup -->
+        <section class="section">
+            <h2 class="section-title">📌 2. DNS-запросы (nslookup)</h2>
+            <div class="screenshot-grid">
+                <div class="screenshot-card">
+                    <h3>nslookup kubsu.ru</h3>
+                    <div class="screenshot-img">
+                        <img src="./image1.png" alt="nslookup kubsu.ru">
+                    </div>
+                    <div class="description">
+                        <p><span class="pink-tag">Команда</span> <code>nslookup kubsu.ru</code></p>
+                        <div class="command-block">
+                            Server: 127.0.0.53<br>
+                            Address: 127.0.0.53#53<br><br>
+                            Non-authoritative answer:<br>
+                            Name: kubsu.ru<br>
+                            Address: 185.13.84.92
+                        </div>
+                        <div class="results">
+                            <p><strong>A-запись:</strong> 185.13.84.92</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="screenshot-card">
+                    <h3>nslookup kubsu-dev.ru</h3>
+                    <div class="screenshot-img">
+                        <img src="./image1.png" alt="nslookup kubsu-dev.ru">
+                    </div>
+                    <div class="description">
+                        <p><span class="pink-tag">Команда</span> <code>nslookup kubsu-dev.ru</code></p>
+                        <div class="command-block">
+                            Server: 127.0.0.53<br>
+                            Address: 127.0.0.53#53<br><br>
+                            Non-authoritative answer:<br>
+                            Name: kubsu-dev.ru<br>
+                            Address: 212.192.134.135
+                        </div>
+                        <div class="results">
+                            <p><strong>A-запись:</strong> 212.192.134.135</p>
+                        </div>
+                    </div>
+                </div>
+
+        <!-- Раздел 3: whois -->
+        <section class="section">
+            <h2 class="section-title">📌 3. Информация о доменах (whois)</h2>
+            <div class="screenshot-grid">
+                <div class="screenshot-card">
+                    <h3>whois kubsu.ru</h3>
+                    <div class="screenshot-img">
+                        <img src="./image2.png" alt="whois kubsu.ru">
+                    </div>
+                    <div class="description">
+                        <p><span class="pink-tag">Команда</span> <code>whois kubsu.ru</code></p>
+                        <div class="results">
+                            <p><strong>📅 Дата регистрации:</strong> <span class="date-badge">1998-03-28</span></p>
+                            <p><strong>🏛️ Организация:</strong> Kuban State University</p>
+                            <p><strong>💰 Оплачен до:</strong> 2026-04-30</p>
+                            <p><strong>🌐 DNS-серверы:</strong> dns1.kubsu.ru, dns2.kubsu.ru</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="screenshot-card">
+                    <h3>whois kubsu-dev.ru</h3>
+                    <div class="screenshot-img">
+                        <img src="./image2.png" alt="whois kubsu-dev.ru">
+                    </div>
+                    <div class="description">
+                        <p><span class="pink-tag">Команда</span> <code>whois kubsu-dev.ru</code></p>
+                        <div class="results">
+                            <p><strong>📅 Дата регистрации:</strong> <span class="date-badge">2020-02-12</span></p>
+                            <p><strong>👤 Владелец:</strong> Private Person</p>
+                            <p><strong>💰 Оплачен до:</strong> 2027-02-12</p>
+                            <p><strong>🌐 DNS-серверы:</strong> ns1.nameself.com, ns2.nameself.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Раздел 5: Выводы -->
+        <section class="section">
+            <h2 class="section-title">📌 Выводы по работе</h2>
+            <div class="screenshot-card">
+                <div class="description">
+                    <p>🌸 В ходе выполнения лабораторной работы были изучены основные сетевые утилиты:</p>
+                    <ul style="margin-left: 30px; margin-top: 15px; color: #831843; line-height: 2;">
+                        <li><code>ping</code> - для проверки доступности узла и определения IP-адреса</li>
+                        <li><code>nslookup</code> - для получения DNS-информации (A и MX записи)</li>
+                        <li><code>whois</code> - для получения данных о регистрации домена</li>
+                        <li><code>ssh/sftp</code> - для удаленного доступа и передачи файлов</li>
+                    </ul>
+                    
+                    <div class="results" style="margin-top: 20px;">
+                        <p><strong>Сравнение доменов:</strong></p>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                            <tr style="background: #f472b6; color: white;">
+                                <th style="padding: 10px; border-radius: 10px 0 0 10px;">Параметр</th>
+                                <th style="padding: 10px;">kubsu.ru</th>
+                                <th style="padding: 10px; border-radius: 0 10px 10px 0;">kubsu-dev.ru</th>
+                            </tr>
+                            <tr style="background: #fdf2f8;">
+                                <td style="padding: 8px;">IP-адрес</td>
+                                <td style="padding: 8px;">185.13.84.92</td>
+                                <td style="padding: 8px;">212.192.134.135</td>
+                            </tr>
+                            <tr style="background: #fce7f3;">
+                                <td style="padding: 8px;">Дата регистрации</td>
+                                <td style="padding: 8px;">1998-03-28 (27 лет)</td>
+                                <td style="padding: 8px;">2020-02-12 (6 лет)</td>
+                            </tr>
+                            <tr style="background: #fdf2f8;">
+                                <td style="padding: 8px;">Владелец</td>
+                                <td style="padding: 8px;">Kuban State University</td>
+                                <td style="padding: 8px;">Private Person</td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <p style="margin-top: 20px; font-size: 1.1em; text-align: center;">
+                        🎀 Все поставленные задачи выполнены, скриншоты приложены. 🎀
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <div class="footer">
+            <p>Сделано с <span class="heart">❤️</span> и 🎀 для лабораторной работы</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">u82088@kubsu-dev.ru | 2026</p>
+        </div>
+    </div>
+</body>
+</html>
